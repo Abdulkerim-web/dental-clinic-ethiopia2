@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import type { Language } from '../utils/translations';
 import { t } from '../utils/translations';
+import { useEffect } from 'react';
 
 interface NavbarProps {
   lang: Language;
@@ -11,6 +12,15 @@ interface NavbarProps {
 export function Navbar({ lang, onLangChange }: NavbarProps) {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
 
   const dashboardPath =
     profile?.role === 'doctor' ? '/doctor' : profile?.role === 'admin' ? '/admin' : '/patient';
@@ -47,6 +57,21 @@ export function Navbar({ lang, onLangChange }: NavbarProps) {
             aria-label="Toggle language"
           >
             {lang === 'en' ? 'አማ' : 'EN'}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              const html = document.documentElement;
+              const isDark = html.classList.contains('dark');
+              html.classList.toggle('dark', !isDark);
+              localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            }}
+            className="rounded-full border border-teal-700/20 px-3 py-1.5 text-xs font-semibold text-teal-800 hover:bg-teal-700/5"
+            aria-label="Toggle theme"
+          >
+            <span className="hidden dark:inline">☀️</span>
+            <span className="inline dark:hidden">🌙</span>
           </button>
 
           {user ? (

@@ -39,17 +39,28 @@ export function ChatWidget({ lang, patientId }: { lang: Language; patientId?: st
       { message: text, language: lang, patientId },
       {
         onSuccess: (res) => setMessages((m) => [...m, { sender: 'ai', message: res.reply }]),
-        onError: () =>
+        onError: (error) => {
+          const errorMessage =
+            error instanceof Error && error.message.includes('network')
+              ? lang === 'am'
+                ? 'አሁን የአይነት ብለው ችግር አለ። እባክዎ እንደገና ይሞክሩ ወይም ክሊኒኩን ይደውሉ።'
+                : 'Network error. Please try again or call the clinic directly.'
+              : error instanceof Error && error.message.includes('API key')
+              ? lang === 'am'
+                ? 'የ AI አገልግሎት አለ። እባክዎ እንደገና ይሞክሩ ወይም ክሊኒኩን ይደውሉ።'
+                : 'AI service configuration error. Please contact the clinic.'
+              : lang === 'am'
+              ? 'የ AI አገልግሎት ችግር አለ። እባክዎ እንደገና ይሞክሩ ወይም ክሊኒኩን ይደውሉ።'
+              : 'AI service error. Please try again or call the clinic directly.';
+          
           setMessages((m) => [
             ...m,
             {
               sender: 'ai',
-              message:
-                lang === 'am'
-                  ? 'ይቅርታ፣ አሁን ምላሽ መስጠት አልቻልኩም። እባክዎ ቆይተው እንደገና ይሞክሩ ወይም ክሊኒኩን ይደውሉ።'
-                  : "Sorry, I couldn't reach the assistant just now. Please try again or call the clinic directly."
+              message: errorMessage
             }
-          ])
+          ]);
+        }
       }
     );
   }
