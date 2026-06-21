@@ -39,25 +39,17 @@ export function ChatWidget({ lang, patientId }: { lang: Language; patientId?: st
       { message: text, language: lang, patientId },
       {
         onSuccess: (res) => setMessages((m) => [...m, { sender: 'ai', message: res.reply }]),
-        onError: (error) => {
-          const errorMessage =
-            error instanceof Error && error.message.includes('network')
-              ? lang === 'am'
-                ? 'አሁን የአይነት ብለው ችግር አለ። እባክዎ እንደገና ይሞክሩ ወይም ክሊኒኩን ይደውሉ።'
-                : 'Network error. Please try again or call the clinic directly.'
-              : error instanceof Error && error.message.includes('API key')
-              ? lang === 'am'
-                ? 'የ AI አገልግሎት አለ። እባክዎ እንደገና ይሞክሩ ወይም ክሊኒኩን ይደውሉ።'
-                : 'AI service configuration error. Please contact the clinic.'
-              : lang === 'am'
-              ? 'የ AI አገልግሎት ችግር አለ። እባክዎ እንደገና ይሞክሩ ወይም ክሊኒኩን ይደውሉ።'
-              : 'AI service error. Please try again or call the clinic directly.';
-          
+        onError: (err) => {
+          // eslint-disable-next-line no-console
+          console.error('[Dama AI chat] request failed:', err);
           setMessages((m) => [
             ...m,
             {
               sender: 'ai',
-              message: errorMessage
+              message:
+                lang === 'am'
+                  ? 'ይቅርታ፣ አሁን ምላሽ መስጠት አልቻልኩም። እባክዎ ቆይተው እንደገና ይሞክሩ ወይም ክሊኒኩን ይደውሉ።'
+                  : "Sorry, I couldn't reach the assistant just now. Please try again or call the clinic directly."
             }
           ]);
         }
@@ -87,7 +79,7 @@ export function ChatWidget({ lang, patientId }: { lang: Language; patientId?: st
       )}
 
       {open && (
-        <div className="fixed inset-x-4 bottom-4 z-50 flex h-[min(560px,80vh)] flex-col overflow-hidden rounded-3xl border border-teal-700/15 bg-white shadow-soft sm:inset-auto sm:bottom-7 sm:right-7 sm:w-[380px]">
+        <div className="fixed inset-x-4 bottom-4 z-50 flex h-[min(560px,80vh)] flex-col overflow-hidden rounded-3xl border border-teal-700/15 bg-surface shadow-soft sm:inset-auto sm:bottom-7 sm:right-7 sm:w-[380px]">
           <div className="flex items-center justify-between bg-teal-700 px-5 py-4 text-white">
             <div>
               <p className="font-display text-base font-semibold">Dama AI Assistant</p>
@@ -112,7 +104,7 @@ export function ChatWidget({ lang, patientId }: { lang: Language; patientId?: st
                   className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                     m.sender === 'patient'
                       ? 'rounded-br-sm bg-teal-700 text-white'
-                      : 'rounded-bl-sm border border-teal-700/10 bg-white text-ink'
+                      : 'rounded-bl-sm border border-teal-700/10 bg-surface text-ink'
                   }`}
                 >
                   {m.message}
@@ -121,7 +113,7 @@ export function ChatWidget({ lang, patientId }: { lang: Language; patientId?: st
             ))}
             {chat.isPending && (
               <div className="flex justify-start">
-                <div className="rounded-2xl rounded-bl-sm border border-teal-700/10 bg-white px-4 py-2.5 text-sm text-ink/50">
+                <div className="rounded-2xl rounded-bl-sm border border-teal-700/10 bg-surface px-4 py-2.5 text-sm text-ink/50">
                   {lang === 'am' ? 'በመተየብ ላይ…' : 'Typing…'}
                 </div>
               </div>
@@ -133,7 +125,7 @@ export function ChatWidget({ lang, patientId }: { lang: Language; patientId?: st
                     key={s}
                     type="button"
                     onClick={() => send(s)}
-                    className="rounded-full border border-teal-700/20 bg-white px-3 py-1.5 text-xs text-teal-800 hover:bg-teal-700/5"
+                    className="rounded-full border border-teal-700/20 bg-surface px-3 py-1.5 text-xs text-teal-800 dark:text-teal-100 hover:bg-teal-700/5"
                   >
                     {s}
                   </button>

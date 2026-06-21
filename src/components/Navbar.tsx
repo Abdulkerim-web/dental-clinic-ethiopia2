@@ -1,8 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useTheme } from '../hooks/useTheme';
+import { ThemeToggle } from './ThemeToggle';
 import type { Language } from '../utils/translations';
 import { t } from '../utils/translations';
-import { useEffect } from 'react';
 
 interface NavbarProps {
   lang: Language;
@@ -12,15 +13,7 @@ interface NavbarProps {
 export function Navbar({ lang, onLangChange }: NavbarProps) {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
+  const { theme, toggleTheme } = useTheme();
 
   const dashboardPath =
     profile?.role === 'doctor' ? '/doctor' : profile?.role === 'admin' ? '/admin' : '/patient';
@@ -28,7 +21,7 @@ export function Navbar({ lang, onLangChange }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-teal-700/10 bg-sand-50/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 font-display text-lg font-semibold text-teal-800">
+        <Link to="/" className="flex items-center gap-2 font-display text-lg font-semibold text-teal-800 dark:text-teal-100">
           <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
             <path
               d="M4 24V11.5C4 6.3 8.3 2 13 2s9 4.3 9 9.5V24"
@@ -41,42 +34,29 @@ export function Navbar({ lang, onLangChange }: NavbarProps) {
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-medium text-ink/80 md:flex">
-          <Link to="/#services" className="hover:text-teal-800">
+          <Link to="/#services" className="hover:text-teal-800 dark:hover:text-teal-100">
             {t(lang, 'nav_services')}
           </Link>
-          <Link to="/#ai" className="hover:text-teal-800">
+          <Link to="/#ai" className="hover:text-teal-800 dark:hover:text-teal-100">
             {t(lang, 'nav_ai')}
           </Link>
         </nav>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+
           <button
             type="button"
             onClick={() => onLangChange(lang === 'en' ? 'am' : 'en')}
-            className="rounded-full border border-teal-700/20 px-3 py-1.5 text-xs font-semibold text-teal-800 hover:bg-teal-700/5"
+            className="rounded-full border border-teal-700/20 px-3 py-1.5 text-xs font-semibold text-teal-800 dark:text-teal-100 hover:bg-teal-700/5"
             aria-label="Toggle language"
           >
             {lang === 'en' ? 'አማ' : 'EN'}
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              const html = document.documentElement;
-              const isDark = html.classList.contains('dark');
-              html.classList.toggle('dark', !isDark);
-              localStorage.setItem('theme', isDark ? 'light' : 'dark');
-            }}
-            className="rounded-full border border-teal-700/20 px-3 py-1.5 text-xs font-semibold text-teal-800 hover:bg-teal-700/5"
-            aria-label="Toggle theme"
-          >
-            <span className="hidden dark:inline">☀️</span>
-            <span className="inline dark:hidden">🌙</span>
-          </button>
-
           {user ? (
             <div className="hidden items-center gap-3 sm:flex">
-              <Link to={dashboardPath} className="text-sm font-semibold text-teal-800 hover:underline">
+              <Link to={dashboardPath} className="text-sm font-semibold text-teal-800 dark:text-teal-100 hover:underline">
                 {profile?.full_name?.split(' ')[0] ?? 'Dashboard'}
               </Link>
               <button
@@ -92,7 +72,7 @@ export function Navbar({ lang, onLangChange }: NavbarProps) {
             </div>
           ) : (
             <div className="hidden items-center gap-3 sm:flex">
-              <Link to="/login" className="text-sm font-semibold text-teal-800 hover:underline">
+              <Link to="/login" className="text-sm font-semibold text-teal-800 dark:text-teal-100 hover:underline">
                 {t(lang, 'nav_login')}
               </Link>
               <Link to="/register" className="btn-primary !px-4 !py-2 text-xs">
