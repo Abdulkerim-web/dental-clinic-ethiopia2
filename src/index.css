@@ -3,20 +3,84 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-ink: 20 36 32;
+    --color-surface: 255 255 255;
+
+    --color-sand-50: 249 248 244;
+    --color-sand-100: 241 238 229;
+    --color-sand-200: 227 221 203;
+
+    --color-teal-50: 238 245 243;
+    --color-teal-100: 216 233 228;
+    --color-teal-200: 169 207 197;
+    --color-teal-300: 117 175 160;
+    --color-teal-400: 63 132 114;
+    --color-teal-500: 31 104 86;
+    --color-teal-600: 21 83 67;
+    --color-teal-700: 15 61 56;
+    --color-teal-800: 11 44 41;
+    --color-teal-900: 8 30 28;
+
+    --color-gold-400: 217 164 65;
+    --color-gold-500: 194 145 47;
+    --color-gold-600: 168 120 35;
+
+    --color-coral-400: 224 121 95;
+    --color-coral-500: 210 96 63;
+  }
+
+  /* Dark theme: the whole "teal" brand scale is remapped to a deep red /
+     garnet palette, and backgrounds shift to a warm near-black. Toggle by
+     adding/removing `dark` on <html> — see ThemeToggle.tsx. */
+  .dark {
+    --color-ink: 240 226 220;
+    --color-surface: 33 21 21;
+
+    --color-sand-50: 18 12 12;
+    --color-sand-100: 30 19 19;
+    --color-sand-200: 46 27 26;
+
+    --color-teal-50: 253 240 237;
+    --color-teal-100: 247 213 206;
+    --color-teal-200: 237 175 165;
+    --color-teal-300: 136 42 38;
+    --color-teal-400: 170 52 46;
+    --color-teal-500: 198 64 54;
+    --color-teal-600: 178 52 45;
+    --color-teal-700: 156 44 39;
+    --color-teal-800: 112 30 27;
+    --color-teal-900: 76 21 20;
+
+    --color-gold-400: 231 179 86;
+    --color-gold-500: 210 158 65;
+    --color-gold-600: 185 134 50;
+
+    --color-coral-400: 233 140 114;
+    --color-coral-500: 220 114 81;
+  }
+
   html {
     scroll-behavior: smooth;
   }
+
   body {
-    @apply bg-sand-50 text-ink font-sans antialiased;
+    @apply bg-sand-50 text-ink font-sans antialiased transition-colors duration-300;
   }
-  h1, h2, h3, h4 {
+
+  h1,
+  h2,
+  h3,
+  h4 {
     @apply font-display;
   }
+
   :focus-visible {
     outline: 2px solid #D9A441;
     outline-offset: 3px;
     border-radius: 4px;
   }
+
   ::selection {
     background-color: #D9A441;
     color: #0B2C29;
@@ -24,7 +88,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -36,22 +103,28 @@
   .container-page {
     @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
   }
+
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-full bg-teal-700 px-6 py-3 text-sm font-semibold text-sand-50 transition hover:bg-teal-800 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none;
   }
+
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-teal-700/30 bg-transparent px-6 py-3 text-sm font-semibold text-teal-800 transition hover:bg-teal-700/5 active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-teal-700/30 bg-transparent px-6 py-3 text-sm font-semibold text-teal-800 dark:text-teal-100 transition hover:bg-teal-700/5 active:scale-[0.98];
   }
+
   .btn-gold {
     @apply inline-flex items-center justify-center gap-2 rounded-full bg-gold-400 px-6 py-3 text-sm font-semibold text-teal-900 transition hover:bg-gold-500 active:scale-[0.98];
   }
+
   .card {
-    @apply rounded-2xl border border-teal-700/10 bg-white/80 p-6 shadow-soft backdrop-blur-sm;
+    @apply rounded-2xl border border-teal-700/10 bg-surface/80 p-6 shadow-soft backdrop-blur-sm;
   }
+
   .input-field {
-    @apply w-full rounded-xl border border-teal-700/20 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink/40 outline-none transition focus:border-teal-500;
+    @apply w-full rounded-xl border border-teal-700/20 bg-surface px-4 py-3 text-sm text-ink placeholder:text-ink/40 outline-none transition focus:border-teal-500;
   }
+
   .label-field {
-    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-teal-800/70;
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-teal-800/70 dark:text-teal-100/80;
   }
 }
